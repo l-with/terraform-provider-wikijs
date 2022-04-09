@@ -5,8 +5,8 @@ import (
 	"flag"
 	"log"
 
+	"github.com/camjjack/terraform-provider-wikijs/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"github.com/hashicorp/terraform-provider-scaffolding-framework/internal/provider"
 )
 
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
@@ -37,8 +37,8 @@ func main() {
 	opts := tfsdk.ServeOpts{
 		Debug: debug,
 
-		// TODO: Update this string with the published name of your provider.
-		Name: "registry.terraform.io/hashicorp/scaffolding",
+		Name: "registry.terraform.io/camjjack/terraform-provider-wikijs",
+		//Name: "registry.terraform.io/hashicorp/scaffolding",
 	}
 
 	err := tfsdk.Serve(context.Background(), provider.New(version), opts)

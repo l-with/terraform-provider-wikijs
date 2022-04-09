@@ -1,3 +1,3 @@
-provider "scaffolding" {
+provider "wikijs" {
   # example configuration here
 }

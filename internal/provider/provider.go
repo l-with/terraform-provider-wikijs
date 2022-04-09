@@ -3,7 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
+	"os"
 
+	"github.com/camjjack/terraform-provider-wikijs/wikijs"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -18,6 +20,7 @@ type provider struct {
 	//
 	// TODO: If appropriate, implement upstream provider SDK or HTTP client.
 	// client vendorsdk.ExampleClient
+	client *wikijs.WikijsClient
 
 	// configured is set to true at the end of the Configure method.
 	// This can be used in Resource and DataSource implementations to verify
@@ -32,52 +35,115 @@ type provider struct {
 
 // providerData can be used to store data from the Terraform configuration.
 type providerData struct {
-	Example types.String `tfsdk:"example"`
+	Host          types.String `tfsdk:"host"`
+	Username      types.String `tfsdk:"username"`
+	Password      types.String `tfsdk:"password"`
+	InitialSetup  types.Bool   `tfsdk:"initial_setup"`
+	ClientTimeout types.Int64  `tfsdk:"client_timeout"`
+	CaCert        types.String `tfsdk:"ca_cert"`
 }
 
 func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderRequest, resp *tfsdk.ConfigureProviderResponse) {
+
 	var data providerData
 	diags := req.Config.Get(ctx, &data)
+	fmt.Printf("In Configure data: %v\n", data)
+
 	resp.Diagnostics.Append(diags...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var host string
+	if data.Host.Null {
+		host = os.Getenv("WIKIJS_HOST")
+	} else {
+		host = data.Host.Value
+	}
 
-	// Configuration values are now available.
-	// if data.Example.Null { /* ... */ }
+	var username string
+	if data.Username.Null {
+		username = os.Getenv("WIKIJS_USERNAME")
+	} else {
+		username = data.Username.Value
+	}
 
-	// If the upstream provider SDK or HTTP client requires configuration, such
-	// as authentication or logging, this is a great opportunity to do so.
+	var password string
+	if data.Password.Null {
+		password = os.Getenv("WIKIJS_PASSWORD")
+	} else {
+		password = data.Password.Value
+	}
 
+	client, err := wikijs.NewWikijsClient(host, username, password, data.InitialSetup.Value, data.ClientTimeout.Value, data.CaCert.Value)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to create client",
+			"Unable to create wikijs client:\n\n"+err.Error(),
+		)
+		return
+	}
+	p.client = client
 	p.configured = true
+
 }
 
 func (p *provider) GetResources(ctx context.Context) (map[string]tfsdk.ResourceType, diag.Diagnostics) {
 	return map[string]tfsdk.ResourceType{
-		"scaffolding_example": exampleResourceType{},
+		//"scaffolding_example": exampleResourceType{},
 	}, nil
 }
 
 func (p *provider) GetDataSources(ctx context.Context) (map[string]tfsdk.DataSourceType, diag.Diagnostics) {
+	fmt.Printf("In GetDataSources:\n")
 	return map[string]tfsdk.DataSourceType{
-		"scaffolding_example": exampleDataSourceType{},
+		"wikijs_authentication_strategy": authenticationStrategyDataSourceType{},
 	}, nil
 }
 
 func (p *provider) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
+	fmt.Printf("In GetSchema:\n")
 	return tfsdk.Schema{
 		Attributes: map[string]tfsdk.Attribute{
-			"example": {
-				MarkdownDescription: "Example provider attribute",
-				Optional:            true,
+			"host": {
+				MarkdownDescription: "wikijs host",
 				Type:                types.StringType,
+				Optional:            true,
+			},
+			"username": {
+				MarkdownDescription: "wikijs administrator username",
+				Type:                types.StringType,
+				Optional:            true,
+			},
+			"password": {
+				MarkdownDescription: "wikijs administrator password",
+				Type:                types.StringType,
+				Optional:            true,
+				Sensitive:           true,
+			},
+			"initial_setup": {
+				MarkdownDescription: "Conduct intial setup request",
+				Type:                types.BoolType,
+				Optional:            true,
+				//Default:           true,
+			},
+			"client_timeout": {
+				MarkdownDescription: "Timeout for client",
+				Type:                types.Int64Type,
+				Optional:            true,
+			},
+			"ca_cert": {
+				MarkdownDescription: "Root CA certificate (useful for development purposes)",
+				Type:                types.StringType,
+				Optional:            true,
 			},
 		},
 	}, nil
 }
 
 func New(version string) func() tfsdk.Provider {
+	fmt.Printf("In new. version %s\n", version)
 	return func() tfsdk.Provider {
 		return &provider{
 			version: version,
@@ -91,6 +157,7 @@ func New(version string) func() tfsdk.Provider {
 // asserted (e.g. provider: in.(*provider)), however using this can prevent
 // potential panics.
 func convertProviderType(in tfsdk.Provider) (provider, diag.Diagnostics) {
+	fmt.Printf("In convertProviderType\n")
 	var diags diag.Diagnostics
 
 	p, ok := in.(*provider)

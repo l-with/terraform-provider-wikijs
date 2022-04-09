@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -9,47 +10,55 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type exampleDataSourceType struct{}
+type authenticationStrategyDataSourceType struct{}
 
-func (t exampleDataSourceType) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
+func (t authenticationStrategyDataSourceType) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
+	fmt.Printf("In GetSchema %v\n", ctx)
 	return tfsdk.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "Example data source",
+		MarkdownDescription: "Authentication Strategy data source",
 
 		Attributes: map[string]tfsdk.Attribute{
-			"configurable_attribute": {
-				MarkdownDescription: "Example configurable attribute",
+			"key": {
+				MarkdownDescription: "Key",
 				Optional:            true,
 				Type:                types.StringType,
 			},
-			"id": {
-				MarkdownDescription: "Example identifier",
+			"title": {
+				MarkdownDescription: "Title",
 				Type:                types.StringType,
 				Computed:            true,
+			},
+			"id": {
+				Type:     types.StringType,
+				Computed: true,
 			},
 		},
 	}, nil
 }
 
-func (t exampleDataSourceType) NewDataSource(ctx context.Context, in tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
+func (t authenticationStrategyDataSourceType) NewDataSource(ctx context.Context, in tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
+	fmt.Printf("In NewDataSource %v\n", ctx)
 	provider, diags := convertProviderType(in)
 
-	return exampleDataSource{
+	return authenticationStrategyDataSource{
 		provider: provider,
 	}, diags
 }
 
-type exampleDataSourceData struct {
-	ConfigurableAttribute types.String `tfsdk:"configurable_attribute"`
-	Id                    types.String `tfsdk:"id"`
+type authenticationStrategyDataSourceData struct {
+	Key   types.String `tfsdk:"key"`
+	Title types.String `tfsdk:"title"`
+	Id    types.String `tfsdk:"id"`
 }
 
-type exampleDataSource struct {
+type authenticationStrategyDataSource struct {
 	provider provider
 }
 
-func (d exampleDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceRequest, resp *tfsdk.ReadDataSourceResponse) {
-	var data exampleDataSourceData
+func (d authenticationStrategyDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceRequest, resp *tfsdk.ReadDataSourceResponse) {
+	fmt.Printf("In Read %v\n", req)
+	var data authenticationStrategyDataSourceData
 
 	diags := req.Config.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
@@ -72,6 +81,7 @@ func (d exampleDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReq
 
 	// For the purposes of this example code, hardcoding a response value to
 	// save into the Terraform state.
+	data.Title = types.String{Value: "example-title"}
 	data.Id = types.String{Value: "example-id"}
 
 	diags = resp.State.Set(ctx, &data)

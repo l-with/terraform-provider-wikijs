@@ -1,0 +1,28 @@
+version: "3"
+volumes:
+  db-data:
+services:
+  db:
+    container_name: wiki-db
+    image: postgres:12
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_PASSWORD: wikijsrocks
+      POSTGRES_USER: wikijs
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  wikijs:
+    image:  requarks/wiki:2.5
+    depends_on:
+    - db
+    environment:
+    - DB_TYPE=postgres
+    - DB_HOST=db
+    - DB_PORT=5432
+    - DB_USER=wikijs
+    - DB_NAME=wiki
+    - DB_PASS=wikijsrocks
+    ports:
+    - 8080:3000
