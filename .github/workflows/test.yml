@@ -65,6 +65,10 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ env.GO_VERSION }}
+      - uses: isbang/compose-action@v1.0.0
+        with:
+          compose-file: 'docker-compose.yml'
+          down-flags: '--volumes'
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ${{ matrix.terraform }}
@@ -73,5 +77,8 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
+          WIKIJS_HOST: "http://localhost:8080"
+          WIKIJS_USERNAME: "admin@wiki.example.local"
+          WIKIJS_PASSWORD: "wikijsrocks"
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10
