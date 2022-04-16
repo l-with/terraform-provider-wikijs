@@ -47,7 +47,6 @@ func (p *provider) Configure(ctx context.Context, req tfsdk.ConfigureProviderReq
 
 	var data providerData
 	diags := req.Config.Get(ctx, &data)
-	fmt.Printf("In Configure data: %v\n", data)
 
 	resp.Diagnostics.Append(diags...)
 
@@ -96,14 +95,12 @@ func (p *provider) GetResources(ctx context.Context) (map[string]tfsdk.ResourceT
 }
 
 func (p *provider) GetDataSources(ctx context.Context) (map[string]tfsdk.DataSourceType, diag.Diagnostics) {
-	fmt.Printf("In GetDataSources:\n")
 	return map[string]tfsdk.DataSourceType{
 		"wikijs_authentication_strategy": authenticationStrategyDataSourceType{},
 	}, nil
 }
 
 func (p *provider) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
-	fmt.Printf("In GetSchema:\n")
 	return tfsdk.Schema{
 		Attributes: map[string]tfsdk.Attribute{
 			"host": {
@@ -156,7 +153,6 @@ func New(version string) func() tfsdk.Provider {
 // asserted (e.g. provider: in.(*provider)), however using this can prevent
 // potential panics.
 func convertProviderType(in tfsdk.Provider) (provider, diag.Diagnostics) {
-	fmt.Printf("In convertProviderType\n")
 	var diags diag.Diagnostics
 
 	p, ok := in.(*provider)

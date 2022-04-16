@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -13,7 +12,6 @@ import (
 type authenticationStrategyDataSourceType struct{}
 
 func (t authenticationStrategyDataSourceType) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
-	fmt.Printf("In GetSchema %v\n", ctx)
 	return tfsdk.Schema{
 		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "Authentication Strategy data source",
@@ -56,7 +54,6 @@ type authenticationStrategyDataSource struct {
 }
 
 func (d authenticationStrategyDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceRequest, resp *tfsdk.ReadDataSourceResponse) {
-	fmt.Printf("In Read %v\n", req)
 	var data authenticationStrategyDataSourceData
 
 	diags := req.Config.Get(ctx, &data)
