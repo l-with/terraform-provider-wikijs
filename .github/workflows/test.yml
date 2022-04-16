@@ -65,15 +65,15 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ env.GO_VERSION }}
-      - uses: isbang/compose-action@v1.0.0
-        with:
-          compose-file: './docker-compose.yml'
-          down-flags: '--volumes'
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
       - uses: actions/checkout@v3
+      - uses: isbang/compose-action@v1.0.0
+        with:
+          compose-file: './docker-compose.yml'
+          down-flags: '--volumes'
       - run: go mod download
       - env:
           TF_ACC: "1"
