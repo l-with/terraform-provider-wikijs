@@ -23,9 +23,9 @@ provider "wikijs" {
 
 ### Optional
 
-- `caCert` (String) Root CA certificate (useful for development purposes)
-- `clientTimeout` (Number) Timeout for client
+- `ca_cert` (String) Root CA certificate (useful for development purposes)
+- `client_timeout` (Number) Timeout for client
 - `host` (String) wikijs host
-- `initialSetup` (Boolean) Conduct intial setup request
+- `initial_setup` (Boolean) Conduct intial setup request
 - `password` (String, Sensitive) wikijs administrator password
 - `username` (String) wikijs administrator username

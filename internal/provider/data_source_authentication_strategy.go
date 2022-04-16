@@ -38,7 +38,6 @@ func (t authenticationStrategyDataSourceType) GetSchema(ctx context.Context) (tf
 }
 
 func (t authenticationStrategyDataSourceType) NewDataSource(ctx context.Context, in tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
-	fmt.Printf("In NewDataSource %v\n", ctx)
 	provider, diags := convertProviderType(in)
 
 	return authenticationStrategyDataSource{

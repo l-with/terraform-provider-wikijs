@@ -143,7 +143,6 @@ func (p *provider) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostic
 }
 
 func New(version string) func() tfsdk.Provider {
-	fmt.Printf("In new. version %s\n", version)
 	return func() tfsdk.Provider {
 		return &provider{
 			version: version,

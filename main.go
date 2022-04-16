@@ -38,7 +38,6 @@ func main() {
 		Debug: debug,
 
 		Name: "registry.terraform.io/camjjack/terraform-provider-wikijs",
-		//Name: "registry.terraform.io/hashicorp/scaffolding",
 	}
 
 	err := tfsdk.Serve(context.Background(), provider.New(version), opts)
