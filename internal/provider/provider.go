@@ -139,10 +139,12 @@ func (p *provider) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostic
 	}, nil
 }
 
-func New(version string) func() tfsdk.Provider {
+func New(version string, client *wikijs.WikijsClient) func() tfsdk.Provider {
 	return func() tfsdk.Provider {
 		return &provider{
-			version: version,
+			version:    version,
+			client:     client,
+			configured: true,
 		}
 	}
 }

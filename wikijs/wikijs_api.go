@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type FinalizeResultStruct struct {
+	Ok    bool   `json:"ok"`
+	Error string `json:"error"`
+}
+
 type ResponseStatus struct {
 	Succeeded bool   `json:"succeeded"`
 	ErrorCode int    `json:"errorCode"`
@@ -75,6 +80,9 @@ type LoginCredentials struct {
 			Typename string `json:"__typename"`
 		} `json:"authentication"`
 	} `json:"data"`
+	Errors []struct {
+		Message string `json:"message"`
+	} `json:"errors"`
 }
 
 type ApiCredentials struct {

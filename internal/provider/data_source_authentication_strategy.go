@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -59,13 +58,9 @@ func (d authenticationStrategyDataSource) Read(ctx context.Context, req tfsdk.Re
 	diags := req.Config.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 
-	log.Printf("got here")
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	log.Printf("got here")
 
 	// If applicable, this is a great opportunity to initialize any necessary
 	// provider client data and make a call using it.

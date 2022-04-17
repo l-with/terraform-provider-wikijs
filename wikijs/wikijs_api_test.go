@@ -25,7 +25,6 @@ func (suite *WikijsApiTestSuite) SetupSuite() {
 	suite.Host = os.Getenv("WIKIJS_HOST")
 	suite.Username = os.Getenv("WIKIJS_USERNAME")
 	suite.Password = os.Getenv("WIKIJS_PASSWORD")
-
 	suite.Client, _ = NewWikijsClient(suite.Host, suite.Username, suite.Password, true, 10, "")
 	if assert.NotNil(suite.T(), suite.Client) {
 		setupDone, err := suite.Client.SetupDone()

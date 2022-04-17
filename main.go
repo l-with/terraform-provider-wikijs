@@ -40,7 +40,7 @@ func main() {
 		Name: "registry.terraform.io/camjjack/terraform-provider-wikijs",
 	}
 
-	err := tfsdk.Serve(context.Background(), provider.New(version), opts)
+	err := tfsdk.Serve(context.Background(), provider.New(version, nil), opts)
 
 	if err != nil {
 		log.Fatal(err.Error())

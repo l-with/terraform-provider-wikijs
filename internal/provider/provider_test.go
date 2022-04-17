@@ -2,6 +2,7 @@ package provider
 
 import (
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/camjjack/terraform-provider-wikijs/wikijs"
@@ -13,10 +14,21 @@ import (
 // acceptance testing. The factory function will be invoked for every Terraform
 // CLI command executed to create a provider server to which the CLI can
 // reattach.
-var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-	"wikijs": func() (tfprotov6.ProviderServer, error) {
-		return tfsdk.NewProtocol6Server(New("test")()), nil
-	},
+var wikijsClient *wikijs.WikijsClient
+var testAccProvider tfsdk.Provider
+var testAccProtoV6ProviderFactories map[string]func() (tfprotov6.ProviderServer, error)
+var clientConnOnce sync.Once
+
+func init() {
+	clientConnOnce.Do(func() {
+		wikijsClient, _ = wikijs.NewWikijsClient(os.Getenv("WIKIJS_HOST"), os.Getenv("WIKIJS_USERNAME"), os.Getenv("WIKIJS_PASSWORD"), true, 30, "")
+		testAccProvider = New("test", wikijsClient)()
+	})
+	testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
+		"wikijs": func() (tfprotov6.ProviderServer, error) {
+			return tfsdk.NewProtocol6Server(testAccProvider), nil
+		},
+	}
 }
 
 func testAccPreCheck(t *testing.T) {
