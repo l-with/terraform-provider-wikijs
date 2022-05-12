@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/hashicorp/go-retryablehttp v0.7.1
 	github.com/hashicorp/terraform-plugin-docs v0.8.0
-	github.com/hashicorp/terraform-plugin-framework v0.7.0
+	github.com/hashicorp/terraform-plugin-framework v0.8.0
 	github.com/hashicorp/terraform-plugin-go v0.9.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.15.0
 	github.com/stretchr/testify v1.7.1
