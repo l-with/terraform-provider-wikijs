@@ -29,10 +29,10 @@ To compile the provider, run `go install`. This will build the provider and put 
 
 To generate or update documentation, run `go generate`.
 
-In order to run the full suite of Acceptance tests, run `make testacc`.
+## Running tests
 
-*Note:* Acceptance tests create real resources, and often cost money to run.
+In order to run the full suite of Acceptance tests, you will either need docker (+ docker-compose) or minikube.
 
-```shell
-make testacc
-```
+To run tests with docker-compose  run `make testacc-compose`.
+
+To run tests with minikuve run  `make testacc`.

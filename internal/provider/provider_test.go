@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/camjjack/terraform-provider-wikijs/wikijs"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 )
@@ -25,9 +26,7 @@ func init() {
 		testAccProvider = New("test", wikijsClient)()
 	})
 	testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-		"wikijs": func() (tfprotov6.ProviderServer, error) {
-			return tfsdk.NewProtocol6Server(testAccProvider), nil
-		},
+		"wikijs": providerserver.NewProtocol6WithError(testAccProvider),
 	}
 }
 
