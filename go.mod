@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/terraform-plugin-framework v0.8.0
 	github.com/hashicorp/terraform-plugin-go v0.9.1
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.17.0
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.2
 	github.com/thanhpk/randstr v1.0.4
 	golang.org/x/net v0.0.0-20220401154927-543a649e0bdd
 )
@@ -71,5 +71,5 @@ require (
 	google.golang.org/genproto v0.0.0-20220401170504-314d38edb7de // indirect
 	google.golang.org/grpc v1.46.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
